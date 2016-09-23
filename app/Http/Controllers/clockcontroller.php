@@ -232,7 +232,7 @@ class clockcontroller extends Controller
         $a= rand(8,9);
         $b=rand(01,59);
         $time=date("Y-m-d H:i:s",strtotime(date("Y-m-d")." $a:$b:$b"));
-        dd($time);
+        //dd($time);
 
             $start_time = Carbon::today();
             $end_time = Carbon::tomorrow();
@@ -245,6 +245,50 @@ class clockcontroller extends Controller
             if ($query_wn == null) {
                 DB::table('workon')
                     ->insert(array('u_id' => 1, 'created_at' => $time));
+            }
+        }
+
+
+    public function user_check(){
+
+        //select all user
+
+        $users =DB::table('user')
+            ->get();
+        foreach ( $users as $user){
+            $user -> u_id;
+        }
+
+
+    }
+        public function wn_check($user){
+
+            //select all uuser
+            $users = DB::table('user')
+                //->where('u_id','=','1')
+                ->get();
+
+
+
+            $a= rand(8,9);
+            $b=rand(01,59);
+            $time=date("Y-m-d H:i:s",strtotime(date("Y-m-d")." $a:$b:$b"));
+            $wn_start_time_=date("Y-m-d H:i:s",strtotime(date("Y-m-d")." 08:00:00"));
+            $wn_end_time=date("Y-m-d H:i:s",strtotime(date("Y-m-d")." 10:00:00"));
+            $query_wn = DB::table('workon')
+                ->where('u_id','=','1')
+                ->whereBetween('created_at',[$wn_start_time_,$wn_end_time])
+                //->where('action_typ','=','on')
+                ->get();
+            if( $query_wn == null )
+            {
+
+                //insert
+                //換句話說每次打卡時，都會先檢查是否已經存在了
+                DB::table('workon')
+                    ->insert(array('u_id' => 1, 'created_at' => $time));
+                //dd($query);
+
             }
         }
 
@@ -358,6 +402,7 @@ class clockcontroller extends Controller
             ->take(10)
             ->orderBy('u_id', 'desc')
             ->get();
+        $query_df=DB::table('dayoff')->get();
 
         //dd($query_wn);
         $u_rs=array(
@@ -365,7 +410,8 @@ class clockcontroller extends Controller
             'u_wn' => $u_id_wn,
             'u_wf' => $u_id_wf,
             'wn' => $query_wn,
-            'wf' => $query_wf
+            'wf' => $query_wf,
+            'dayoff' => $query_df
         );
         // DB::table('workon')
         //   ->where('u_id', 1)

@@ -37,8 +37,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
 
-       $schedule->call('clockcontroller@store')
-        ->everyMinute();
+       $schedule->call('clockcontroller@wn_check')
+        ->dailyAt('16:15');
 
     }
 
