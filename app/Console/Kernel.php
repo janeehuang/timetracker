@@ -38,7 +38,6 @@ class Kernel extends ConsoleKernel
     {
 
        $schedule->call('clockcontroller@store')
-        
         ->everyMinute();
 
     }

@@ -243,7 +243,7 @@
         </th>
         <th class="text-left">WorkOn Time</th>
         <th class="text-left">WorkOff Time</th>
-        <th class="text-left">請假明細</th>
+        <th class="text-left">DayOff List</th>
 
     </tr>
     </thead>
