@@ -32,28 +32,89 @@ class clockcontroller extends Controller
         $query_wn = DB::table('workon') ->get();
 
         $query_s = DB::table('workoff') ->get();
-        //$query_us =DB::table('workon') ->get('u_id');
-            //->whereBetween('created_at', ['2016-07-01', '2016-07-15 '])->get();
-        //$on_time=workon::find(1);
-        //echo $on_time->users->u_id;
+        $query_df=DB::table('dayoff')->get();
 
-
-        $query_wn = DB::table('workon')
+        $u_nm=DB::table('user')
             ->where('u_id','=','1')
-            ->where('created_at','like','2016%')
-            //->where('action_typ','=','on')
-            //->take(10)
-            //->orderBy('id', 'desc')
+            ->select('u_name')
             ->get();
+        //dd($u_nm);
 
         $rs = array(
+            'u_nm' => $u_nm,
             'workon' => $query_wn,
             'workoff' => $query_wf,
             'search' => $query_s,
         );
+        $input = \Request::all();
+
+        //$id=$input['id'];
+        //dd($id);
 
 
-        return view('clock/index')->with("rs",$rs);
+        $query_wn = DB::table('workon')
+            ->where('u_id','=','1')
+            ->take(10)
+            ->orderBy('u_id', 'desc')
+            ->get();
+
+        //dd($query);
+        //$query_end = DB::table('workoff') ->get();
+        //$query = DB::table('workon') ->get();
+
+        $query_wf = DB::table('workoff')
+            ->where('u_id','=','1')
+            ->take(10)
+            ->orderBy('u_id', 'desc')
+            ->get();
+
+        //dd($query_wn);
+        $u_rs=array(
+            'u_nm' => $u_nm,
+            //'u_wn' => $u_id_wn,
+            //'u_wf' => $u_id_wf,
+            'wn' => $query_wn,
+            'wf' => $query_wf,
+            'workon' => $query_wn,
+            'workoff' => $query_wf,
+            'search' => $query_s,
+            'dayoff' =>$query_df,
+
+
+        );
+        // DB::table('workon')
+        //   ->where('u_id', 1)
+        // ->update(['created_at' => Carbon::now()]);
+
+
+
+        //$query_us =DB::table('workon') ->get('u_id');
+        //->whereBetween('created_at', ['2016-07-01', '2016-07-15 '])->get();
+        //$on_time=workon::find(1);
+        //echo $on_time->users->u_id;
+
+
+
+
+
+        // $rs = array(
+        //   'workon' => $query_wn,
+        //  'workoff' => $query_end,
+        // 'search' => $query_wn,
+        //);
+
+
+        // return view('clock/view')->with("rs",$rs);
+        //, compact('query'))
+
+
+
+        //dd($u_rs);
+
+        return View::make('clock/index')->with('u_rs', $u_rs);
+
+
+        //return view('clock/index')->with("rs",$rs);
         //, compact('query'))
 
 
@@ -69,6 +130,7 @@ class clockcontroller extends Controller
     public function store(Request $request)
     {
         //dd($request);
+
 
 
         $input = \Request::all();
@@ -161,10 +223,32 @@ class clockcontroller extends Controller
         //return Redirect::to('/clock/index');
 
         return Redirect::to('/clock/index');
+
         //return view('clock/show');
 
         //return $request->all();
     }
+    public function schedule(){
+        $a= rand(8,9);
+        $b=rand(01,59);
+        $time=date("Y-m-d H:i:s",strtotime(date("Y-m-d")." $a:$b:$b"));
+        dd($time);
+
+            $start_time = Carbon::today();
+            $end_time = Carbon::tomorrow();
+
+            $query_wn = DB::table('workon')
+                ->where('u_id', '=', '1')
+                ->whereBetween('created_at', [$start_time, $end_time])
+                ->where('action_typ','=','on')
+                ->get();
+            if ($query_wn == null) {
+                DB::table('workon')
+                    ->insert(array('u_id' => 1, 'created_at' => $time));
+            }
+        }
+
+
 
 
     public function goSearch()
@@ -312,12 +396,30 @@ class clockcontroller extends Controller
 
         //dd($u_rs);
 
-        return View::make('clock/view')->with('u_rs', $u_rs);
+        return View::make('clock/index')->with('u_rs', $u_rs);
 
 
 
     }
+    public function dayoff(){
 
+
+        return View::make('dayoff');
+    }
+    public function dayoff_store(){
+        $input=\Request::all();
+        //dd($input);
+        DB::table('dayoff')
+            ->insert(array('u_id' => 1, 'hap_time'=>$input["hap_time"],
+                'choices'=>$input["dayoff_type"],'leave_reason'=>$input["reason"], 'created_at' => Carbon::now()));
+        $query_df=DB::table('dayoff')
+            ->where('u_id','=',1)
+            ->get();
+
+
+
+        return Redirect::to('/clock/index');
+    }
 
 
 

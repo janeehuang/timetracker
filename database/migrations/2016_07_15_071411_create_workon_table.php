@@ -13,7 +13,9 @@ class CreateWorkonTable extends Migration
     public function up()
     {
         Schema::create('workon', function (Blueprint $table) {
-            $table->increments('u_id');
+
+            $table->increments('id');
+            $table->tinyInteger('u_id');
             $table->time('on_time');
             $table->timestamps();
 

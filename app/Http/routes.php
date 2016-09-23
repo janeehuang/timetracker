@@ -27,6 +27,12 @@ Route::get('clock/goSearch','clockcontroller@goSearch');
 
 Route::post('/','clockcontroller@f_id');
 
+Route::get('clock/dayoff','clockcontroller@dayoff');
+
+Route::post('clock/dayoff','clockcontroller@dayoff_store');
+
+//Route::get('/','clockcontrolelr@view');
+
 Route::get('/', function () {
     return view('welcome');
 });

@@ -13,7 +13,9 @@ class CreateWorkoffTable extends Migration
     public function up()
     {
         Schema::create('workoff', function (Blueprint $table) {
-            $table->increments('u_id');
+
+            $table->increments('id');
+            $table->tinyInteger('u_id');
            $table->time('off_time');
             $table->timestamps();
 
