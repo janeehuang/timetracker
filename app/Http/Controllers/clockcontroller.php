@@ -264,9 +264,9 @@ class clockcontroller extends Controller
         public function wn_check($user){
 
             //select all uuser
-            $users = DB::table('user')
+           // $users = DB::table('user')
                 //->where('u_id','=','1')
-                ->get();
+             //   ->get();
 
 
 
