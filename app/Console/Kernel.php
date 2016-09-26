@@ -37,8 +37,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
 
-       $schedule->call('clockcontroller@wn_check')
-        ->dailyAt('16:15');
+       $schedule->call('App\Http\Controllers\clockcontroller@wn_check')
+	->everyMinute();
+       // ->dailyAt('19:05');
 
     }
 
