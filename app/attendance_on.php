@@ -5,9 +5,9 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
 
-class workon extends Model
+class attendance_on extends Model
 {
-    protected $table = 'workon';
+    protected $table = 'attendance_on';
 
     protected $primaryKey = 'u_id';
 

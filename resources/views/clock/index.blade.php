@@ -267,13 +267,13 @@
                 <hr>
             @endforeach</td>
         <td class="text-left">@foreach( $u_rs['dayoff'] as $var_wn)
-                {{$var_wn->hap_time}} &nbsp;  {{$var_wn->choices}} <hr>
+                {{$var_wn->leave_day}} &nbsp;  {{$var_wn->leave_typ}} <hr>
             @endforeach</td></td>
     </tr>
     <tr>
         <td class="text-left"><a href=""><input type="btn" class="btn4 btn-default" value="回上一頁"/></a> </td>
         <td class="text-left">
-            <form action="{{'show'}}" method="post">
+            <form action={{'show'}} method="post">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
                 <input type="hidden" name="action_typ" value="on">

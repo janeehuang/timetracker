@@ -19,7 +19,7 @@ Route::get('/clock/index','clockcontroller@index');
 
 Route::get('clock/show', 'clockcontroller@create');
 
-Route::post('clock/show', 'clockcontroller@store');
+Route::post('show', 'clockcontroller@store');
 
 Route::get('clock/selfservice','clockcontroller@getSearch');
 
@@ -27,9 +27,9 @@ Route::get('clock/goSearch','clockcontroller@goSearch');
 
 Route::post('/','clockcontroller@f_id');
 
-Route::get('clock/dayoff','clockcontroller@dayoff');
+Route::get('dayoff','clockcontroller@dayoff');
 
-Route::post('clock/dayoff','clockcontroller@dayoff_store');
+Route::post('dayoff','clockcontroller@dayoff_store');
 
 //Route::get('/','clockcontrolelr@view');
 

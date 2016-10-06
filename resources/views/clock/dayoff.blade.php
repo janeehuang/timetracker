@@ -115,17 +115,17 @@
 
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
-            <input id="datepicker1" type="text" name="hap_time" placeholder="請假日期" class="email"/><br>
+            <input id="datepicker1" type="text" name="leave_day" placeholder="請假日期" class="email"/><br>
 
-            假別：<input name="dayoff_type" type="radio" value="病假">病假
+            假別：<input name="leave_typ" type="radio" value="病假">病假
 
-            <input  name="dayoff_type" type="radio" value="休假">休假
+            <input  name="leave_typ" type="radio" value="休假">休假
 
-            <input name="dayoff_type" type="radio" value="事假">事假
+            <input name="leave_typ" type="radio" value="事假">事假
 
-            <input name="dayoff_type" type="radio" value="公假">公假<br>
+            <input name="leave_typ" type="radio" value="公假">公假<br>
 
-            <textarea name="reason" id="" cols="30" rows="10" class="email" placeholder="原因"></textarea>
+            <textarea name="leave_desc" id="" cols="30" rows="10" class="email" placeholder="原因"></textarea>
 
             <input type="submit" value="我要請假" class="btn btn-primary" name="insert">
 

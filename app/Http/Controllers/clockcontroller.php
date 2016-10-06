@@ -23,49 +23,35 @@ class clockcontroller extends Controller
 
 
 
-            //dd($query);
-        $query_wf = DB::table('workoff')
-            ->where('u_id','=','1')
-            //->where('created_at','like',' 2016%')
-            ->get();
-        //dd($query_wf);
-        $query_wn = DB::table('workon') ->get();
 
-        $query_s = DB::table('workoff') ->get();
-        $query_df=DB::table('dayoff')->get();
+        $query_off = DB::table('attendance_off')
+            ->where('uid','=','1')
+            ->get();
+
+        $query_on = DB::table('attendance_on') ->get();
+
+        $query_s = DB::table('attendance_off') ->get();
+        $query_dayoff=DB::table('dayoff')->get();
 
         $u_nm=DB::table('user')
-            ->where('u_id','=','1')
+            ->where('uid','=','1')
             ->select('u_name')
             ->get();
-        //dd($u_nm);
-
-        $rs = array(
-            'u_nm' => $u_nm,
-            'workon' => $query_wn,
-            'workoff' => $query_wf,
-            'search' => $query_s,
-        );
-        $input = \Request::all();
-
-        //$id=$input['id'];
-        //dd($id);
 
 
-        $query_wn = DB::table('workon')
-            ->where('u_id','=','1')
+
+
+        $query_wn = DB::table('attendance_on')
+            ->where('uid','=','1')
             ->take(10)
-            ->orderBy('u_id', 'desc')
+            ->orderBy('created_at', 'desc')
             ->get();
 
-        //dd($query);
-        //$query_end = DB::table('workoff') ->get();
-        //$query = DB::table('workon') ->get();
 
-        $query_wf = DB::table('workoff')
-            ->where('u_id','=','1')
+        $query_wf = DB::table('attendance_off')
+            ->where('uid','=','1')
             ->take(10)
-            ->orderBy('u_id', 'desc')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         //dd($query_wn);
@@ -78,44 +64,14 @@ class clockcontroller extends Controller
             'workon' => $query_wn,
             'workoff' => $query_wf,
             'search' => $query_s,
-            'dayoff' =>$query_df,
+            'dayoff' =>$query_dayoff,
 
 
         );
-        // DB::table('workon')
-        //   ->where('u_id', 1)
-        // ->update(['created_at' => Carbon::now()]);
 
-
-
-        //$query_us =DB::table('workon') ->get('u_id');
-        //->whereBetween('created_at', ['2016-07-01', '2016-07-15 '])->get();
-        //$on_time=workon::find(1);
-        //echo $on_time->users->u_id;
-
-
-
-
-
-        // $rs = array(
-        //   'workon' => $query_wn,
-        //  'workoff' => $query_end,
-        // 'search' => $query_wn,
-        //);
-
-
-        // return view('clock/view')->with("rs",$rs);
-        //, compact('query'))
-
-
-
-        //dd($u_rs);
 
         return View::make('clock/index')->with('u_rs', $u_rs);
 
-
-        //return view('clock/index')->with("rs",$rs);
-        //, compact('query'))
 
 
 
@@ -143,7 +99,7 @@ class clockcontroller extends Controller
 
 
         $a= rand(8,9);
-        $b=rand(01,59);
+        $b=rand(00,59);
         $time=date("Y-m-d H:i:s",strtotime(date("Y-m-d")." $a:$b:$b"));
         //dd($time);
 
@@ -151,9 +107,9 @@ class clockcontroller extends Controller
 
         if ($input["action_typ"] == "on") {
 
-            $query_wn = DB::table('workon')
+            $query_wn = DB::table('attendance_on')
 
-                ->where('u_id','=','1')
+                ->where('uid','=','1')
                 ->whereBetween('created_at',[$start_time,$end_time])
                 //->where('action_typ','=','on')
                 ->get();
@@ -169,8 +125,8 @@ class clockcontroller extends Controller
 
                 //insert
                 //換句話說每次打卡時，都會先檢查是否已經存在了
-                DB::table('workon')
-                    ->insert(array('u_id' => 1, 'created_at' => Carbon::now()));
+                DB::table('attendance_on')
+                    ->insert(array('uid' => 1, 'created_at' => Carbon::now()));
                 //dd($query);
 
             }
@@ -178,8 +134,8 @@ class clockcontroller extends Controller
             {
                 //update
                 //check today on existed
-                DB::table('workon')
-                    ->where('u_id', 1)
+                DB::table('attendance_on')
+                    ->where('uid', 1)
                     ->whereBetween('created_at',[$start_time,$end_time])
                     //->where('action_typ','=','on')
                     //->has('created_at')
@@ -191,20 +147,20 @@ class clockcontroller extends Controller
 
         }
         else {
-            $query_wf = DB::table('workoff')
-                ->where('u_id','=','1')
+            $query_wf = DB::table('attendance_off')
+                ->where('uid','=','1')
                 ->whereBetween('created_at',[$start_time,$end_time])
                 //->where('action_typ','=','on')
                 ->first();
             //dd($query_wf);
             if ($query_wf == null) {
-                DB::table('workoff')
-                    ->insert(array('u_id' => 1, 'created_at' => Carbon::now()));
+                DB::table('attendance_off')
+                    ->insert(array('uid' => 1, 'created_at' => Carbon::now()));
             }
 
             else{
-                DB::table('workoff')
-                    ->where('u_id', 1)
+                DB::table('attendance_off')
+                    ->where('uid', 1)
                     ->whereBetween('created_at',[$start_time,$end_time])
                     //->where('action_typ','=','on')
                     //->has('created_at')
@@ -213,20 +169,9 @@ class clockcontroller extends Controller
             }
             }
 
-
-        //if($input["action_typ"] == "search"){
-        //$request->whereBetween('created_at', ['2016-07-01', '2016-07-15 '])->get();
-        //return view('clock/show');
-        //}
-        //clock::create();//$request->all()
-
-        //return Redirect::to('/clock/index');
-
         return Redirect::to('/clock/index');
 
-        //return view('clock/show');
 
-        //return $request->all();
     }
     public function schedule(){
         $a= rand(8,9);
@@ -237,14 +182,14 @@ class clockcontroller extends Controller
             $start_time = Carbon::today();
             $end_time = Carbon::tomorrow();
 
-            $query_wn = DB::table('workon')
-                ->where('u_id', '=', '1')
+            $query_wn = DB::table('attendance_on')
+                ->where('uid', '=', '1')
                 ->whereBetween('created_at', [$start_time, $end_time])
                 ->where('action_typ','=','on')
                 ->get();
             if ($query_wn == null) {
-                DB::table('workon')
-                    ->insert(array('u_id' => 1, 'created_at' => $time));
+                DB::table('attendance_on')
+                    ->insert(array('uid' => 1, 'created_at' => $time));
             }
         }
 
@@ -256,7 +201,7 @@ class clockcontroller extends Controller
         $users =DB::table('user')
             ->get();
         foreach ( $users as $user){
-            $user -> u_id;
+            $user -> uid;
         }
 
 
@@ -271,12 +216,13 @@ class clockcontroller extends Controller
 
 
             $a= rand(8,9);
-            $b=rand(01,59);
-            $time=date("Y-m-d H:i:s",strtotime(date("Y-m-d")." $a:$b:$b"));
+            $b=rand(00,59);
+            $c=rand(00,59);
+            $time=date("Y-m-d H:i:s",strtotime(date("Y-m-d")." $a:$b:$c"));
             $wn_start_time_=date("Y-m-d H:i:s",strtotime(date("Y-m-d")." 08:00:00"));
             $wn_end_time=date("Y-m-d H:i:s",strtotime(date("Y-m-d")." 10:00:00"));
-            $query_wn = DB::table('workon')
-                ->where('u_id','=','1')
+            $query_wn = DB::table('attendance_on')
+                ->where('uid','=','1')
                 ->whereBetween('created_at',[$wn_start_time_,$wn_end_time])
                 //->where('action_typ','=','on')
                 ->get();
@@ -285,12 +231,44 @@ class clockcontroller extends Controller
 
                 //insert
                 //換句話說每次打卡時，都會先檢查是否已經存在了
-                DB::table('workon')
-                    ->insert(array('u_id' => 1, 'created_at' => $time));
+                DB::table('attendance_on')
+                    ->insert(array('uid' => 1, 'created_at' => $time));
                 //dd($query);
 
             }
         }
+
+    public function wf_check($user){
+
+        //select all uuser
+        // $users = DB::table('user')
+        //->where('u_id','=','1')
+        //   ->get();
+
+
+
+        $a= rand(8,9);
+        $b=rand(00,59);
+        $c=rand(00,59);
+        $time=date("Y-m-d H:i:s",strtotime(date("Y-m-d")." $a:$b:$c"));
+        $wf_start_time_=date("Y-m-d H:i:s",strtotime(date("Y-m-d")." 08:00:00"));
+        $wf_end_time=date("Y-m-d H:i:s",strtotime(date("Y-m-d")." 10:00:00"));
+        $query_wf = DB::table('attendance_off')
+            ->where('uid','=','1')
+            ->whereBetween('created_at',[$wf_start_time_,$wf_end_time])
+            //->where('action_typ','=','on')
+            ->get();
+        if( $query_wf == null )
+        {
+
+            //insert
+            //換句話說每次打卡時，都會先檢查是否已經存在了
+            DB::table('attendance_off')
+                ->insert(array('uid' => 1, 'created_at' => $time));
+            //dd($query);
+
+        }
+    }
 
 
 
@@ -317,25 +295,19 @@ class clockcontroller extends Controller
         //get keywords input for search
         $f_time = $input['q'];
         $s_time = $input['e'];
-        $list_wn = DB::table('workon')
+        $list_wn = DB::table('attendance_on')
             ->whereBetween('created_at', [$f_time, $s_time])
             ->Where(function($query_wn) use ($uid)
             {
 
                 if( $uid !="")
-                    $query_wn->where('u_id', '=',$uid );
+                    $query_wn->where('uid', '=',$uid );
 
 
             })
             ->get();
 
 
-        //$uid =DB::table('workon')
-          //  -> where('u_id', '=', $_POST['uid'])->get();
-        //$list_wf = DB::table('workoff')
-           // ->whereBetween('created_at',[$input['q'],$input['e']]);
-        //search that student in Database
-        //$date= workon::find($keyword);
         $rs = array(
             'list' => $list_wn,
             //'list_wf'=>$list_wf,
@@ -355,7 +327,7 @@ class clockcontroller extends Controller
         //dd($id);
 
         //抓名字
-        $user = DB::table('user')->where('u_id', $id)
+        $user = DB::table('user')->where('uid', $id)
             ->select('u_name')
             ->get();
         //$uid = DB::table('user')
@@ -363,84 +335,42 @@ class clockcontroller extends Controller
           //  ->where('u_name','=',$id)
             //->get();
         //dd($user);
-        $u_id_wn=DB::table('workon')
-            ->where('u_id',$id)
+        $uid_wn=DB::table('attendance_on')
+            ->where('uid',$id)
             ->select('created_at as workon')
             ->get();
-        //    $u_id_wn = DB::table('user')
-                //->where('user.u_id', '=', $id)
-          //      ->join('workon', 'workon.u_id', '=', 'user.u_id')
-                //->join('workoff', 'workoff.u_id', '=', 'user.u_id')
-            //    ->select('user.u_name','workon.created_at AS workon')
-              //  ->get();
-        //dd($u_id_wn);
 
-        $u_id_wf=DB::table('workoff')
-            ->where('u_id',$id)
+
+        $uid_wf=DB::table('attendance_off')
+            ->where('uid',$id)
             ->select('created_at as workoff')
             ->get();
 
-        //$u_id_wf = DB::table('user')
-            //->where('user.u_id', '=', $id)
-            //->leftjoin('workon', 'workon.u_id', '=', 'user.u_id')
-          //  ->join('workoff', 'workoff.u_id', '=', 'user.u_id')
-            //->select('user.u_name','workoff.created_at AS workoff')
-            //->get();
-        //dd($u_id_wf);
-        $query_wn = DB::table('workon')
-            ->where('u_id','=','1')
+
+        $query_wn = DB::table('attendance_on')
+            ->where('uid','=','1')
             ->take(10)
-            ->orderBy('u_id', 'desc')
+            ->orderBy('created_at', 'desc')
             ->get();
 
-        //dd($query);
-        //$query_end = DB::table('workoff') ->get();
-        //$query = DB::table('workon') ->get();
 
-        $query_wf = DB::table('workoff')
-            ->where('u_id','=','1')
+        $query_wf = DB::table('attendance_off')
+            ->where('uid','=','1')
             ->take(10)
-            ->orderBy('u_id', 'desc')
+            ->orderBy('uid', 'desc')
             ->get();
         $query_df=DB::table('dayoff')->get();
 
         //dd($query_wn);
         $u_rs=array(
             'u_nm' => $user,
-            'u_wn' => $u_id_wn,
-            'u_wf' => $u_id_wf,
+            'u_wn' => $uid_wn,
+            'u_wf' => $uid_wf,
             'wn' => $query_wn,
             'wf' => $query_wf,
             'dayoff' => $query_df
         );
-        // DB::table('workon')
-        //   ->where('u_id', 1)
-        // ->update(['created_at' => Carbon::now()]);
 
-
-
-        //$query_us =DB::table('workon') ->get('u_id');
-        //->whereBetween('created_at', ['2016-07-01', '2016-07-15 '])->get();
-        //$on_time=workon::find(1);
-        //echo $on_time->users->u_id;
-
-
-
-
-
-       // $rs = array(
-         //   'workon' => $query_wn,
-          //  'workoff' => $query_end,
-           // 'search' => $query_wn,
-        //);
-
-
-       // return view('clock/view')->with("rs",$rs);
-        //, compact('query'))
-
-
-
-        //dd($u_rs);
 
         return View::make('clock/index')->with('u_rs', $u_rs);
 
@@ -456,10 +386,10 @@ class clockcontroller extends Controller
         $input=\Request::all();
         //dd($input);
         DB::table('dayoff')
-            ->insert(array('u_id' => 1, 'hap_time'=>$input["hap_time"],
-                'choices'=>$input["dayoff_type"],'leave_reason'=>$input["reason"], 'created_at' => Carbon::now()));
+            ->insert(array('uid' => 1, 'leave_day'=>$input["leave_day"],
+                'leave_typ'=>$input["leave_typ"],'leave_desc'=>$input["leave_desc"], 'created_at' => Carbon::now()));
         $query_df=DB::table('dayoff')
-            ->where('u_id','=',1)
+            ->where('uid','=',1)
             ->get();
 
 
