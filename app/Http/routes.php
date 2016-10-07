@@ -13,6 +13,7 @@
 use App\workon;
 use App\workoff;
 
+Route::get('test','clockcontroller@wn_check');
 Route::get('/clock/index','clockcontroller@getSearch');
 
 Route::get('/clock/index','clockcontroller@index');

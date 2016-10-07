@@ -37,6 +37,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
 
+
        $schedule->call('clockcontroller@wn_check')
         ->dailyAt('10:15');
 
@@ -47,6 +48,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->call('clockcontroller@store')
             ->weekdays();
+
 
 
 

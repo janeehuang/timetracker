@@ -206,12 +206,14 @@ class clockcontroller extends Controller
 
 
     }
-        public function wn_check($user){
+        public function wn_check($user=null){
 
             //select all uuser
-           // $users = DB::table('user')
+
+
+          //  $users = DB::table('user')
                 //->where('u_id','=','1')
-             //   ->get();
+            //    ->get();
 
 
 
@@ -321,7 +323,9 @@ class clockcontroller extends Controller
         return View::make('/clock/selfservice')->with('rs', $rs);
     }
     public function f_id(Request $request){
+
         $input = \Request::all();
+
 
             $id=$input['id'];
         //dd($id);
