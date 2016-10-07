@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Faker\Provider\DateTime;
 use Illuminate\Http\Request;
 
+use App\Http\Controllers\clockcontroller;
 use App\Http\Requests;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
@@ -38,18 +39,16 @@ class Kernel extends ConsoleKernel
     {
 
 
-       $schedule->call('clockcontroller@wn_check')
+       $schedule->call('App\Http\Controllers\clockcontroller@wn_check')
         ->dailyAt('10:15');
 
 
-        $schedule->call('clockcontroller@wf_check')
+        $schedule->call('App\Http\Controllers\clockcontroller@wf_check')
             ->dailyAt('20:10');
 
 
-        $schedule->call('clockcontroller@store')
+        $schedule->call('App\Http\Controllers\clockcontroller@store')
             ->weekdays();
-
-
 
 
     }
