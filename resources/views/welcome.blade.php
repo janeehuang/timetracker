@@ -24,6 +24,11 @@
             <input type="text" name="id" >
             <input type="submit" name="enter" value="enter" style="font-size: 125px; width: 50px; height: 50px; text-align: center; ">
         </form>
+        <form action={{'checkAttendence'}} method="post">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <input type="submit" value="submit" class="btn btn-default" name="setOldAttendance">
+        </form>
+
 
     </div>
 </div>

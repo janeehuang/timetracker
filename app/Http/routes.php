@@ -32,6 +32,9 @@ Route::get('dayoff','clockcontroller@dayoff');
 
 Route::post('dayoff','clockcontroller@dayoff_store');
 
+Route::post('setOldAttendance','clockcontroller@setOldAttendance');
+
+Route::post('checkAttendence','clockcontroller@checkAttendence');
 //Route::get('/','clockcontrolelr@view');
 
 Route::get('/', function () {

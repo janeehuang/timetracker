@@ -289,6 +289,14 @@
 
     </tbody>
 </table>
+<form action={{'setOldAttendance'}} method="post">
+    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+
+
+    <input type="submit" value="Set" class="btn btn-default" name="setOldAttendance">
+</form>
+
+
 <script type="text/javascript" language="JavaScript">
 
     function renderTime () {

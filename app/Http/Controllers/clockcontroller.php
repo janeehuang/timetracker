@@ -216,7 +216,6 @@ class clockcontroller extends Controller
             //    ->get();
 
 
-
             $a= rand(8,9);
             $b=rand(00,59);
             $c=rand(00,59);
@@ -381,6 +380,7 @@ class clockcontroller extends Controller
 
 
     }
+
     public function dayoff(){
 
 
@@ -399,6 +399,102 @@ class clockcontroller extends Controller
 
 
         return Redirect::to('/clock/index');
+    }
+
+    public function setOldAttendance()
+    {
+        //$input = Input::all();
+        //$rs = false;
+
+
+
+        $users = array('2','3','6','7','8','10'); //uid list
+        //先設定時間範圍
+        $bgn_date = '2016-01-01 08:30';
+        $end_date = '2016-10-31';
+        // 再轉成 strtotime
+        $bgn_time = strtotime($bgn_date);
+        $end_time = strtotime($end_date);
+        $current_time = $bgn_time;
+
+
+
+        $max_sec = 2*60*60; //兩小時隨機
+
+
+        while( $current_time < $end_time  )
+        {
+
+
+            $week_day = getdate($current_time)['wday'];
+
+            if ( $week_day!=0 && $week_day!=6 ) //跳過週日週六
+            {
+                foreach( $users as $uid)
+                {
+                    //從中取隨機, 再轉回 datetime
+                    $rand_sec = rand(1, $max_sec);
+                    //dd($rand_sec);
+                    $rand_date = date('Y-m-d H:i:s', $current_time + $rand_sec);
+                    //dd($rand_date);
+                    DB::table('attendance_on')->insert(array(
+                            'uid' => $uid,
+                            'created_at' => $rand_date
+                        )
+                    );
+                }
+            }
+
+            $current_date = date('Y-m-d H:i:s', $current_time);
+            $current_time = strtotime("+1 day" . $current_date);
+        }
+
+
+        $rs = true;
+
+        return $this->response->array((array)$rs);
+    }
+
+    public function checkAttendence()
+    {
+        $users = array('2', '3', '6', '7', '8', '10');
+        $today_mon =getdate()["mon"];
+        $today_mday=getdate()["mday"];
+        //$bgn_time_=date("Y-m-d H:i:s",strtotime(date("Y-m-d")));
+        //$end_time=date("Y-m-d H:i:s",strtotime(date("Y-m-d")));
+        $week_day = getdate()["wday"];
+
+        if ($week_day != 0 && $week_day != 6) {
+            foreach ($users as $uid) {
+                $attendance_on = DB::table('attendance_on')
+                    ->where('uid', '=', $uid)
+                    //->where('created_at',['like','%',$today_mon,'%'])
+                    ->where('created_at','>=', date('Y-m-d 00:00:00'))
+                    ->where('created_at','<=', date('Y-m-d 59:59:00'))
+                    ->select(array('uid'))->get();
+
+                //dd(count($attendance_on));
+                if (count($attendance_on) ==0 ) {
+                    $a = rand(8, 9);
+                    $b = rand(00, 59);
+                    $c = rand(00, 59);
+                    $time = date("Y-m-d H:i:s", strtotime(date("Y-m-d") . " $a:$b:$c"));
+                    DB::table('attendance_on')->insert(array(
+                            'uid' => $uid,
+                            'created_at' => $time
+                        )
+                    );
+
+                }
+                else
+                {
+                    dd('not insert');
+                }
+
+            }
+            dd(true);
+            return $this->response;
+        }
     }
 
 
